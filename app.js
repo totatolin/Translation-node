@@ -8,6 +8,8 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
+var fs = require('fs');
+var markdown = require('markdown-js');
 
 var app = express();
 
@@ -23,6 +25,14 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.engine('md', function(path, options, fn){  
+  fs.readFile(path, 'utf8', function(err, str){  
+    if (err) return fn(err);  
+    str = markdown.parse(str).toString();  
+    fn(null, str);  
+  });  
+});  
+
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
@@ -30,6 +40,22 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/users', user.list);
+
+app.get('/markdown', function(req, res) {  
+    res.render('./index.md', {layout: false});  
+}); 
+
+app.all('*', function (req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
+	res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+	res.header("X-Powered-By",' 3.2.1');
+	if(req.method=="OPTIONS") {
+		res.send(200);
+	} else {
+		next();
+	}
+});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
