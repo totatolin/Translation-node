@@ -41,21 +41,21 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-app.get('/markdown', function(req, res) {  
+app.get('/proxy-api/markdown', function(req, res) {  
     res.render('./index.md', {layout: false});  
 }); 
 
-app.all('*', function (req, res, next) {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
-	res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-	res.header("X-Powered-By",' 3.2.1');
-	if(req.method=="OPTIONS") {
-		res.send(200);
-	} else {
-		next();
-	}
-});
+// app.all('*', function (req, res, next) {
+// 	res.header("Access-Control-Allow-Origin", "*");
+// 	res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
+// 	res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+// 	res.header("X-Powered-By",' 3.2.1');
+// 	if(req.method=="OPTIONS") {
+// 		res.send(200);
+// 	} else {
+// 		next();
+// 	}
+// });
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
