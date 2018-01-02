@@ -1,8 +1,5 @@
+import test from './test'
 
-/*
- * GET home page.
- */
-
-exports.index = function(req, res){
-  res.render('index', { title: 'Express' });
-};
+export default app => {
+	app.use('/proxy-api/test', test);
+}
